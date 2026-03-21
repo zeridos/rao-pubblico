@@ -74,7 +74,7 @@ def create_first_operator(request):
                                     fiscalNumber=request.session['usernameField'],
                                     email=request.session['emailField'],
                                     idRole=Role.objects.get(role=RoleTag.ADMIN.value),
-                                    password=hash_pass_insert.decode("UTF-8"),
+                                    password=hash_pass_insert,
                                     isActivated=False)
 
             return True
@@ -303,7 +303,7 @@ def update_password_operator(username, new_password, status=True, request=None):
             hash_pass_insert = jwt.encode(
                 {'username': username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=30)}, password,
                 algorithm='HS256')
-            operator.password = hash_pass_insert.decode("UTF-8")
+            operator.password = hash_pass_insert
             operator.status = True
             operator.failureCounter = 0
             operator.save()
@@ -338,7 +338,7 @@ def create_operator(admin_username, operator):
                                                fiscalNumber=fiscalNumber_op,
                                                email=re.sub(r"[\n\t\s]*", "", operator.get('email')),
                                                idRole=Role.objects.get(role=RoleTag.OPERATOR.value),
-                                               password=hash_pass_insert.decode("UTF-8"),
+                                               password=hash_pass_insert,
                                                status=False,
                                                isActivated=False)
 

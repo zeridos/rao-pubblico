@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.10-slim
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -12,8 +12,12 @@ RUN apt-get update \
   && apt-get install -y gettext \
   # xmlsec dependencies
   && apt-get install -y libxmlsec1-dev \
-     # sqlite binaries for maintenance
+  # sqlite binaries for maintenance
   && apt-get install -y sqlite3 \
+  # updates for python3.10
+  && apt-get install -y libxml2-dev \
+  && apt-get install -y libssl-dev \
+  && apt-get install -y libffi-dev \
 
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
@@ -23,6 +27,7 @@ RUN apt-get update \
   && usermod -a -G root rao
   
 COPY ./compose/local/rao/start ./compose/production/rao/entrypoint /
+RUN chmod +x /start /entrypoint
 COPY ./rao /rao
 
 # Requirements are installed here to ensure they will be cached.

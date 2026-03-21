@@ -29,7 +29,7 @@ class Operator(models.Model):
     surname = models.CharField(verbose_name='Cognome', max_length=30, null=False, db_index=True)
     fiscalNumber = models.CharField(verbose_name='Codice Fiscale', max_length=16, null=False, db_index=True,
                                     unique=True)
-    idRole = models.ForeignKey(Role, verbose_name='Ruolo', on_delete=None)
+    idRole = models.ForeignKey(Role, verbose_name='Ruolo', on_delete=models.CASCADE)
     status = models.BooleanField(verbose_name='Stato', default=False, db_index=True)
     signStatus = models.BooleanField(verbose_name='Stato', default=False, db_index=True)
     isActivated = models.BooleanField(verbose_name='Stato di attivazione', default=True, db_index=True)
@@ -58,7 +58,7 @@ class AddressMunicipality(models.Model):
     name = models.CharField(verbose_name='Comune', max_length=150, null=False, db_index=True)
     code = models.CharField(verbose_name='Codice', max_length=20, null=False, db_index=True)
     city = models.ForeignKey(AddressCity, related_name='Città', verbose_name='Città', max_length=100, null=False,
-                             on_delete=None)
+                             on_delete=models.CASCADE)
     dateStart = models.DateField(verbose_name='Data Inizio', null=True)
     dateEnd = models.DateField(verbose_name='Data Fine', null=True)
 
@@ -79,10 +79,10 @@ class TokenUser(models.Model):
 class IdentityRequest(models.Model):
     uuid_identity = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     fiscalNumberUser = models.CharField(verbose_name='Codice Fiscale', null=True, max_length=16, db_index=True)
-    idOperator = models.ForeignKey(Operator, verbose_name='Operatore', on_delete=None)
+    idOperator = models.ForeignKey(Operator, verbose_name='Operatore', on_delete=models.CASCADE)
     status = models.SmallIntegerField(verbose_name='Stato', default=0, db_index=True)
     timestamp_identification = models.DateTimeField(verbose_name='Data Identificazione', null=True)
-    token = models.ForeignKey(TokenUser, verbose_name='Token Utente', on_delete=None)
+    token = models.ForeignKey(TokenUser, verbose_name='Token Utente', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Identity'

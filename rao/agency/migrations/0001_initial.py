@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
                 ('signStatus', models.BooleanField(db_index=True, default=False, verbose_name='Stato')),
                 ('failureTimestamp', models.DateTimeField(null=True, verbose_name='Data tentativo errato')),
                 ('failureCounter', models.SmallIntegerField(default=0, verbose_name='Contatore tentativi errati')),
-                ('idRole', models.ForeignKey(on_delete=None, to='agency.Role', verbose_name='Ruolo')),
+                ('idRole', models.ForeignKey(on_delete=models.CASCADE, to='agency.Role', verbose_name='Ruolo')),
             ],
             options={
                 'verbose_name': 'Operator',
@@ -116,8 +116,8 @@ class Migration(migrations.Migration):
                 ('fiscalNumberUser', models.CharField(db_index=True, max_length=16, null=True, verbose_name='Codice Fiscale')),
                 ('status', models.SmallIntegerField(db_index=True, default=0, verbose_name='Stato')),
                 ('timestamp_identification', models.DateTimeField(null=True, verbose_name='Data Identificazione')),
-                ('idOperator', models.ForeignKey(on_delete=None, to='agency.Operator', verbose_name='Operatore')),
-                ('token', models.ForeignKey(on_delete=None, to='agency.TokenUser', verbose_name='Token Utente')),
+                ('idOperator', models.ForeignKey(on_delete=models.CASCADE, to='agency.Operator', verbose_name='Operatore')),
+                ('token', models.ForeignKey(on_delete=models.CASCADE, to='agency.TokenUser', verbose_name='Token Utente')),
             ],
             options={
                 'verbose_name': 'Identity',
@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(db_index=True, max_length=20, verbose_name='Codice')),
                 ('dateStart', models.DateField(null=True, verbose_name='Data Inizio')),
                 ('dateEnd', models.DateField(null=True, verbose_name='Data Fine')),
-                ('city', models.ForeignKey(max_length=100, on_delete=None, related_name='Città', to='agency.AddressCity', verbose_name='Città')),
+                ('city', models.ForeignKey(max_length=100, on_delete=models.CASCADE, related_name='Città', to='agency.AddressCity', verbose_name='Città')),
             ],
         ),
     ]

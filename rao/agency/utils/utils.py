@@ -378,7 +378,7 @@ def check_password(username, password, status, request=None):
             return StatusCode.SIGN_NOT_AVAILABLE.value
         hash_pass = user.password
         try:
-            jwt.decode(hash_pass, hash_pass_insert)
+            jwt.decode(hash_pass, hash_pass_insert, algorithms=["HS256"])
             return StatusCode.OK.value
         except jwt.ExpiredSignatureError:
             return StatusCode.EXPIRED_TOKEN.value
@@ -405,7 +405,7 @@ def check_operator(username, password, request=None):
             return StatusCode.UNAUTHORIZED.value
         hash_pass = user.password
         try:
-            jwt.decode(hash_pass, hash_pass_insert)
+            jwt.decode(hash_pass, hash_pass_insert, algorithms=["HS256"])
             user.failureCounter = 0
             user.save()
             if not user.signStatus and user.isActivated:
