@@ -1,4 +1,27 @@
 services:
+  signserver:
+    build:
+      context: ../signserver/
+      dockerfile: ./compose/local/sieltesign/Dockerfile
+    image: sign_server
+    container_name: signserver
+    volumes:
+      - type: volume
+        source: signdata
+        target: /data/
+    ports:
+      - "8003:8003"
+    networks:
+      - netwlocal
+    command: ./start
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8003/v2/api/status" ]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 5s
+
   rao:
     build:
       context: .
@@ -16,21 +39,10 @@ services:
     env_file:
       - ./compose/local/rao/rao.env
     command: ./start
-  signserver:
-    build:
-      context: ../signserver/
-      dockerfile: ./compose/local/sieltesign/Dockerfile
-    image: sign_server
-    container_name: signserver
-    volumes:
-      - type: volume
-        source: signdata
-        target: /data/
-    ports:
-      - "8003:8003"
-    networks:
-      - netwlocal
-    command: ./start
+    restart: unless-stopped
+    depends_on:
+      signserver:
+        condition: service_healthy
 
 networks:
   netwlocal:
