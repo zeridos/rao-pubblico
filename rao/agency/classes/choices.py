@@ -6,8 +6,14 @@ import agency
 LOG = logging.getLogger(__name__)
 
 CHOICE_SEX = (
-    ('M', 'M'),
-    ('F', 'F'),
+    ('M', 'Maschio'),
+    ('F', 'Femmina'),
+)
+
+IDENTIFICATION_TYPE = (
+    ('TS', 'Tessera Sanitaria'),
+    ('CF', 'Tesserino Codice Fiscale'),
+    ('AIRE', 'Certificato Attribuzione Codice Fiscale')
 )
 
 ADDRESS_TYPE = (

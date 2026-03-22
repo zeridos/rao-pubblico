@@ -271,6 +271,21 @@ def check_ts(number):
 
     return True
 
+def check_cf(number):
+    """
+    Verifica la validità del codice di identificazione del codice fiscale
+    :param number: codice di identificazione da verificare
+    :return: True/False
+    """
+
+    if not number.isdigit():
+        return False
+
+    if len(number) != 10:
+        return False
+
+    return True
+
 
 def delete_session_key(request):
     """

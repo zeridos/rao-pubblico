@@ -25,7 +25,7 @@ class UserDetail:
         self.name = agency.utils.utils.capitalize_text(identity.get('name'))
         self.email = re.sub(r"[\n\t\s]*", "", identity.get('email'))
         self.familyName = agency.utils.utils.capitalize_text(identity.get('familyName'))
-        self.identificationType = 'TS'
+        self.identificationType = identity.get('identificationType')
         self.identificationSerialCode = re.sub(r"[\n\t\s]*", "", identity.get('identificationSerialCode'))
         self.identificationExpirationDate = re.sub(r"[\n\t\s]*", "", identity.get('identificationExpirationDate'))
         self.fiscalNumber = re.sub(r"[\n\t\s]*", "", identity.get('fiscalNumber').upper())

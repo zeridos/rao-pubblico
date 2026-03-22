@@ -86,8 +86,8 @@ def generate_ICRequestData(creation_time, user, rao, request_identity):
         },
         "electronicIdentification": {
             "identificationType": user['identificationType'],
-            "identificationSerialCode": user['identificationSerialCode'],
-            "identificationExpirationDate": user['identificationExpirationDate'].strftime("%Y-%m-%d")
+            "identificationSerialCode": user['identificationSerialCode'] if user['identificationSerialCode'] != '' else None,
+            "identificationExpirationDate": (user['identificationExpirationDate'].strftime("%Y-%m-%d") if user['identificationExpirationDate'] else None)
         },
         "spidAttributes": {
             "mandatoryAttributes": {

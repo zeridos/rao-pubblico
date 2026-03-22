@@ -50,7 +50,7 @@
                                             {% endif %}
 
                                             <div class="row pt-2">
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-3">
                                                     <p>Codice fiscale:</p>
                                                     <p id="modalFiscalCode" class="font-weight-bold"> {{ params.user_detail.fiscalNumber }} </p>
                                                 </div>
@@ -61,27 +61,36 @@
                                                        class="font-weight-bold text-danger" {% endif %}> {{ params.user_detail.name }} </p>
                                                 </div>
 
-                                                <div class="col-lg-4">
+                                                <div class="col-lg-3">
                                                     <p>Cognome:</p>
                                                     <p id="modalSurname" {% if params.verify_cf_dic.familyName %} class="font-weight-bold" {% else %}
                                                        class="font-weight-bold text-danger" {% endif %}> {{ params.user_detail.familyName }} </p>
                                                 </div>
-                                            </div>
 
-                                            <div class="row pt-5">
-                                                <div class="col-lg-1">
+                                                <div class="col-lg-2">
                                                     <p>Sesso:</p>
                                                     <p id="modalGender" {% if params.verify_cf_dic.gender %} class="font-weight-bold" {% else %}
                                                        class="font-weight-bold text-danger" {% endif %}>{{ params.user_detail.gender}} </p>
                                                 </div>
-                                                <div class="col-lg-5">
-                                                    <p>Codice della Tessera Sanitaria:</p>
-                                                    <p id="modalIdentificationSerialCode" class="font-weight-bold">{{ params.user_detail.identificationSerialCode }} </p>
+                                            </div>
+
+                                            <div class="row pt-5">
+                                                <div class="col-lg-4">
+                                                    <p>Tipologia documento:</p>
+                                                    {% if 'TS' in params.user_detail.identificationType %} <p class="font-weight-bold">Tessera Sanitaria</p>{% endif %}
+                                                    {% if 'CF' in params.user_detail.identificationType %} <p class="font-weight-bold">Tesserino Codice Fiscale</p>{% endif %}
+                                                    {% if 'AIRE' in params.user_detail.identificationType %} <p class="font-weight-bold">Certificato Attribuzione Codice Fiscale</p>{% endif %}
                                                 </div>
-                                                <div class="col-lg-6">
-                                                    <p>Data di scadenza della Tessera Sanitaria:</p>
-                                                    <p id="modalidentificationExpirationDate" class="font-weight-bold">{{ params.user_detail.identificationExpirationDate }} </p>
-                                                </div>
+                                                {% if 'TS' in params.user_detail.identificationType or 'CF' in params.user_detail.identificationType %}
+                                                    <div class="col-lg-4">
+                                                        <p>Codice identificativo:</p>
+                                                        <p id="modalIdentificationSerialCode" class="font-weight-bold">{{ params.user_detail.identificationSerialCode }} </p>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <p>Data di scadenza:</p>
+                                                        <p id="modalidentificationExpirationDate" class="font-weight-bold">{{ params.user_detail.identificationExpirationDate }} </p>
+                                                    </div>
+                                                {% endif %}
                                             </div>
 
 
@@ -274,7 +283,7 @@
                                        class="form-text text-danger"> {{ form.fiscalNumber.errors }} </small>
                             </div>
 
-                            <div class="form-group col-lg-4 ">
+                            <div class="form-group col-lg-3 ">
                                 <input type="text" class="form-control" id="name" name="name" autocomplete="0"
                                        aria-describedby="nameHelp" {% if form.name.value %}
                                        value="{{ form.name.value }}" {% endif %}>
@@ -282,7 +291,7 @@
                                 <small id="nameHelp" class="form-text text-danger">{{ form.name.errors }}</small>
                             </div>
 
-                            <div class="form-group col-lg-4">
+                            <div class="form-group col-lg-3">
                                 <input type="text" class="form-control" id="familyName" name="familyName" autocomplete="0"
                                        aria-describedby="familyNameHelp" {% if form.familyName.value %}
                                        value="{{ form.familyName.value }}" {% endif %}>
@@ -291,38 +300,46 @@
                                        class="form-text  text-danger">{{ form.familyName.errors }}</small>
                             </div>
 
-
-                        </div>
-
-                        <div class="form-row">
-
-                            <div class="form-group col-lg-3">
+                            <div class="form-group col-lg-2">
                                 <div class="bootstrap-select-wrapper">
                                     <select id="gender" name="gender" title="Sesso*" aria-describedby="genderHelp">
-                                        <option {% if form.gender.value == 'M' %} selected {% endif %} value="M">
-                                        Maschio
-                                        </option>
-                                        <option {% if form.gender.value == 'F' %} selected {% endif %} value="F">
-                                        Femmina
-                                        </option>
-
+                                        {% for value, label in form.gender.field.choices %}
+                                            <option {% if form.gender.value == value %} selected {% endif %} value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
                                     </select>
                                     <small id="genderHelp"
                                            class="form-text  text-danger">{{ form.gender.errors }}</small>
                                 </div>
                             </div>
 
-                            <div class="form-group col-lg-5">
+
+                        </div>
+
+                        <div class="form-row">
+
+                            <div class="form-group col-lg-4">
+                                <div class="bootstrap-select-wrapper">
+                                    <select id="identificationType" name="identificationType" title="Tipologia documento*" aria-describedby="identificationTypeHelp">
+                                        {% for value, label in form.identificationType.field.choices %}
+                                            <option {% if form.identificationType.value == value %} selected {% endif %} value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <small id="identificationTypeHelp"
+                                           class="form-text  text-danger">{{ form.identificationType.errors }}</small>
+                                </div>
+                            </div>
+
+                            <div id="col_identificationSerialCode" class="form-group col-lg-5">
                                 <input type="text" class="form-control" id="identificationSerialCode" autocomplete="0"
                                        name="identificationSerialCode"
                                        aria-describedby="identificationSerialCodeHelp"
                                        {% if form.identificationSerialCode.value %}
                                        value="{{ form.identificationSerialCode.value }}" {% endif %}>
-                                <label for="identificationSerialCode">Numero di identificazione tessera sanitaria*</label>
+                                <label for="identificationSerialCode">Numero di identificazione del documento*</label>
                                 <small id="identificationSerialCodeHelp"
                                        class="form-text  text-danger">{{ form.identificationSerialCode.errors }}</small>
                             </div>
-                            <div class="form-group col-lg-4">
+                            <div id="col_identificationExpirationDate" class="form-group col-lg-3">
                                 <div class="it-datepicker-wrapper">
                                     <div class="form-group">
                                         <label for="identificationExpirationDate"></label>
@@ -335,7 +352,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                         </div>
 
@@ -478,38 +494,9 @@
                                 <div class="bootstrap-select-wrapper">
                                     <select id="addressType" name="addressType" title="Tipo*"
                                             aria-describedby="addressTypeHelp">
-                                        <option {% if form.addressType.value == 'Via' %} selected {% endif %}
-                                        value="Via">Via
-                                        </option>
-                                        <option {% if form.addressType.value == 'Viale' %} selected {% endif %}
-                                        value="Viale">Viale
-                                        </option>
-                                        <option {% if form.addressType.value == 'Vicolo' %} selected {% endif %}
-                                        value="Vicolo">Vicolo
-                                        </option>
-                                        <option {% if form.addressType.value == 'Strada' %} selected {% endif %}
-                                        value="Strada">Strada
-                                        </option>
-                                        <option {% if form.addressType.value == 'Piazza' %} selected {% endif %}
-                                        value="Piazza">Piazza
-                                        </option>
-                                        <option {% if form.addressType.value == 'Piazzale' %} selected {% endif %}
-                                        value="Piazzale">
-                                        Piazzale
-                                        </option>
-                                        <option {% if form.addressType.value == 'Largo' %} selected {% endif %}
-                                        value="Largo">Largo
-                                        </option>
-                                        <option {% if form.addressType.value == 'Corso' %} selected {% endif %}
-                                        value="Corso">Corso
-                                        </option>
-                                        <option {% if form.addressType.value == 'Contrada' %} selected {% endif %}
-                                        value="Contrada">
-                                        Contrada
-                                        </option>
-                                        <option {% if form.addressType.value == 'Altro' %} selected {% endif %}
-                                        value="Altro">Altro
-                                        </option>
+                                        {% for value, label in form.addressType.field.choices %}
+                                            <option {% if form.addressType.value == value %} selected {% endif %} value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
                                     </select>
                                     <small id="addressTypeHelp"
                                            class="form-text  text-danger"> {{ form.addressType.errors }} </small>
@@ -545,7 +532,6 @@
                             </div>
                             <div class="form-group col-lg-4">
                                 <div class="bootstrap-select-wrapper">
-
                                     {{ form.addressNation }}
                                     <small id="addressNationHelp"
                                            class="form-text text-danger">{{ form.addressNation.errors }} </small>
@@ -598,16 +584,9 @@
                                 <div class="bootstrap-select-wrapper">
                                     <select id="idCardType" name="idCardType" title="Tipo*"
                                             aria-describedby="idCardTypeHelp">
-                                        <option {% if form.idCardType.value == 'cartaIdentita' %}
-                                        selected {% endif %} value="cartaIdentita">Carta d'Identit&aacute;
-                                        </option>
-                                        <option {% if form.idCardType.value == 'passaporto' %} selected {% endif %}
-                                        value="passaporto">
-                                        Passaporto
-                                        </option>
-                                        <option {% if form.idCardType.value == 'patenteGuida' %}
-                                        selected {% endif %} value="patenteGuida">Patente di Guida
-                                        </option>
+                                        {% for value, label in form.idCardType.field.choices %}
+                                            <option {% if form.idCardType.value == value %} selected {% endif %} value="{{ value }}">{{ label }}</option>
+                                        {% endfor %}
                                     </select>
                                     <small id="idCardTypeHelp"
                                            class="form-text text-danger">{{ form.idCardType.errors }} </small>
@@ -711,6 +690,32 @@ function enable_autopopulate_fields() {
     document.getElementById("dateOfBirth").disabled = false;
     document.getElementById("gender").disabled = false;
 }
+</script>
+
+<script>
+function toggleIdentificationFields() {
+    const type = document.getElementById('identificationType').value;
+    const col_identificationSerialCode = document.getElementById('col_identificationSerialCode');
+    const col_identificationExpirationDate = document.getElementById('col_identificationExpirationDate');
+    const identificationSerialCode = document.getElementById('identificationSerialCode');
+    const identificationExpirationDate = document.getElementById('identificationExpirationDate');
+
+    if (type === 'TS' || type === 'CF') {
+        col_identificationSerialCode.style.display = 'block';
+        col_identificationExpirationDate.style.display = 'block';
+    } else {
+        col_identificationSerialCode.style.display = 'none';
+        col_identificationExpirationDate.style.display = 'none';
+        identificationSerialCode.value = '';
+        identificationExpirationDate.value = '';
+    }
+}
+
+// Inizializza al caricamento pagina
+document.addEventListener('DOMContentLoaded', toggleIdentificationFields);
+
+// Aggiungi listener per onchange
+document.getElementById('identificationType').addEventListener('change', toggleIdentificationFields);
 </script>
 
 {% endblock %}

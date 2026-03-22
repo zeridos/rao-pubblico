@@ -1,6 +1,43 @@
 # Changelog
 Tutte le modifiche al progetto, nuove funzionalità e informazioni sono documentate in questo file.
 
+## [1.1.1] - 22/03/2026
+
+### Modifiche
+
+- Adeguamento del modello `ICRequestData` alle linee guida AGID:
+  - introdotti i valori ammessi per `identificationType`: 
+    - `TS` e `CF` per documenti tessera sanitaria o tesserino codice fiscale (residenti esteri senza TS);
+    - `AIRE` per residenti esteri con codice fiscale rilasciato dalle sedi Consolari italiane;
+  - `identificationSerialCode`:
+    - per `TS` e `CF` contiene il seriale della tessera utilizzata;
+    - per `AIRE` è impostato a `null`;
+  - `identificationExpirationDate`:
+    - riporta la data di fine validità della tessera nel formato `YYYY-mm-dd`;
+    - se non disponibile o `AIRE`, il valore è `null`;
+- Aggiornati i form per la gestione delle nuove tipologie di identificazione;
+- Aggiornata la generazione del token JWT per includere correttamente i nuovi valori di `identificationType`, `identificationSerialCode` e `identificationExpirationDate`;
+
+## [1.1.0] - 21/03/2026
+
+### Modifiche
+
+- Aggiornato Python da 3.6 a 3.10;
+- Aggiornate le librerie a versioni compatibili con Python 3.10:
+  - Django 3.2 LTS;
+  - PyJWT 2.8;
+  - pyOpenSSL 23;
+  - cryptography 41;
+  - requests 2.31;
+- Migrazioni adattate per Django 3.2;
+- Aggiunto `DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'` per rimuovere warning;
+
+### Fix
+
+- Corrette tutte le ForeignKey con `on_delete` compatibili con Django 3.2 (DO_NOTHING o SET_NULL + null=True);
+- Risolti errori `.decode()` su stringhe già unicode in Python 3.10;
+- Sistemati i permessi dei file per l’utente Docker;
+
 ## [1.0.16] - 19/01/2022
 
 ### Fix

@@ -13,13 +13,13 @@ from django.forms import CharField, Form, PasswordInput, TextInput, ValidationEr
     FileInput
 
 # Imports from your apps
-from .classes.choices import CARD_TYPE, ADDRESS_TYPE, CHOICE_SEX, ISSUER_TYPE, get_choices_address_nation, \
-    get_choices_address_city, get_choices_address_municipality, get_choices_prefix, \
+from .classes.choices import CARD_TYPE, ADDRESS_TYPE, CHOICE_SEX, IDENTIFICATION_TYPE, ISSUER_TYPE, \
+    get_choices_address_nation, get_choices_address_city, get_choices_address_municipality, get_choices_prefix, \
     get_choices_cryptotag, StatusCode
 from .classes.regex import regex_cap, regex_cie, regex_cf, regex_date, regex_email, regex_number, \
     regex_name, regex_password, regex_surname, regex_doc, regex_rao_name, regex_issuercode, \
     regex_pwd_email, regex_patente, regex_email_port, regex_pin, regex_dim_pin, regex_id_card_issuer
-from .utils.utils import check_ts, get_certificate, set_client_ip, calculate_age
+from .utils.utils import check_ts, check_cf, get_certificate, set_client_ip, calculate_age
 from .utils.utils_cert import verify_policy_certificate, check_expiration_certificate, verify_certificate_chain
 from .utils.utils_db import get_all_operator_cf
 
@@ -441,14 +441,19 @@ class NewIdentityForm(Form):
                          choices=CHOICE_SEX,
                          error_messages={'required': 'Campo obbligatorio!'})
 
+    identificationType = ChoiceField(widget=Select(attrs={'id': 'identificationType', 'name': 'identificationType'}),
+                         required=True,
+                         choices=IDENTIFICATION_TYPE,
+                         error_messages={'required': 'Campo obbligatorio!'})
+
     identificationSerialCode = CharField(
         widget=TextInput(attrs={'id': 'identificationSerialCode', 'name': 'identificationSerialCode'}),
-        required=True,
+        required=False,
         error_messages={'required': 'Campo obbligatorio!'})
 
     identificationExpirationDate = CharField(
         widget=TextInput(attrs={'id': 'identificationExpirationDate', 'name': 'identificationExpirationDate'}),
-        required=True,
+        required=False,
         error_messages={'required': 'Campo obbligatorio!'},
         validators=[regex_date])
 
@@ -653,10 +658,31 @@ class NewIdentityForm(Form):
         return
 
     def clean_identificationSerialCode(self):
+        identificationType = self.cleaned_data.get('identificationType')
         identificationSerialCode = self.cleaned_data.get('identificationSerialCode')
-        if check_ts(identificationSerialCode.replace(' ', '')):
-            return
-        raise ValidationError("Codice di identificazione non valido!")
+
+        if identificationType == 'TS':
+            if check_ts(identificationSerialCode.replace(' ', '')):
+                return
+            else:
+                raise ValidationError("Codice di identificazione non valido!")
+        elif identificationType == 'CF':
+            if check_cf(identificationSerialCode.replace(' ', '')):
+                return
+            else:
+                raise ValidationError("Codice di identificazione non valido!")
+
+        return
+
+    def clean_identificationExpirationDate(self):
+        identificationType = self.cleaned_data.get('identificationType')
+        identificationExpirationDate = self.cleaned_data.get('identificationExpirationDate')
+
+        if identificationType == 'TS' or identificationType == 'CF':
+            if identificationExpirationDate == '':
+                raise ValidationError("Campo obbligatorio!")
+
+        return
 
     id_card_type = None
 
@@ -726,14 +752,19 @@ class NewIdentityPinForm(Form):
                          choices=CHOICE_SEX,
                          error_messages={'required': 'Campo obbligatorio!'})
 
+    identificationType = ChoiceField(widget=Select(attrs={'id': 'identificationType', 'name': 'identificationType'}),
+                         required=True,
+                         choices=IDENTIFICATION_TYPE,
+                         error_messages={'required': 'Campo obbligatorio!'})
+
     identificationSerialCode = CharField(
         widget=TextInput(attrs={'id': 'identificationSerialCode', 'name': 'identificationSerialCode'}),
-        required=True,
+        required=False,
         error_messages={'required': 'Campo obbligatorio!'})
 
     identificationExpirationDate = CharField(
         widget=TextInput(attrs={'id': 'identificationExpirationDate', 'name': 'identificationExpirationDate'}),
-        required=True,
+        required=False,
         error_messages={'required': 'Campo obbligatorio!'},
         validators=[regex_date])
 
@@ -949,10 +980,31 @@ class NewIdentityPinForm(Form):
         return
 
     def clean_identificationSerialCode(self):
+        identificationType = self.cleaned_data.get('identificationType')
         identificationSerialCode = self.cleaned_data.get('identificationSerialCode')
-        if check_ts(identificationSerialCode.replace(' ', '')):
-            return
-        raise ValidationError("Codice di identificazione non valido!")
+
+        if identificationType == 'TS':
+            if check_ts(identificationSerialCode.replace(' ', '')):
+                return
+            else:
+                raise ValidationError("Codice di identificazione non valido!")
+        elif identificationType == 'CF':
+            if check_cf(identificationSerialCode.replace(' ', '')):
+                return
+            else:
+                raise ValidationError("Codice di identificazione non valido!")
+
+        return
+
+    def clean_identificationExpirationDate(self):
+        identificationType = self.cleaned_data.get('identificationType')
+        identificationExpirationDate = self.cleaned_data.get('identificationExpirationDate')
+
+        if identificationType == 'TS' or identificationType == 'CF':
+            if identificationExpirationDate == '':
+                raise ValidationError("Campo obbligatorio!")
+
+        return
 
     id_card_type = None
 

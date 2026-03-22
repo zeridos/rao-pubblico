@@ -496,9 +496,10 @@ def summary_identity(request, t):
                 identity['idCardIssueDate'] = datetime.datetime.strptime(identity['idCardIssueDate'], '%d/%m/%Y')
                 identity['idCardExpirationDate'] = datetime.datetime.strptime(identity['idCardExpirationDate'],
                                                                               '%d/%m/%Y')
-                identity['identificationExpirationDate'] = datetime.datetime.strptime(
-                    identity['identificationExpirationDate'], '%d/%m/%Y')
+                identity['identificationExpirationDate'] = (datetime.datetime.strptime(
+                    identity['identificationExpirationDate'], '%d/%m/%Y') if identity['identificationExpirationDate'] else None)
                 id_request = create_identity_request(request, identity)
+
                 pin = params['pin']
                 dict_token = signed_token(identity, request.session['username'], pin)
 
