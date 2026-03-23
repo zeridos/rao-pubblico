@@ -678,7 +678,7 @@ class NewIdentityForm(Form):
         identificationType = self.cleaned_data.get('identificationType')
         identificationExpirationDate = self.cleaned_data.get('identificationExpirationDate')
 
-        if identificationType == 'TS' or identificationType == 'CF':
+        if identificationType == 'TS':
             if identificationExpirationDate == '':
                 raise ValidationError("Campo obbligatorio!")
 
@@ -1000,7 +1000,7 @@ class NewIdentityPinForm(Form):
         identificationType = self.cleaned_data.get('identificationType')
         identificationExpirationDate = self.cleaned_data.get('identificationExpirationDate')
 
-        if identificationType == 'TS' or identificationType == 'CF':
+        if identificationType == 'TS':
             if identificationExpirationDate == '':
                 raise ValidationError("Campo obbligatorio!")
 

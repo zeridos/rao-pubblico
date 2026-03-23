@@ -86,10 +86,12 @@
                                                         <p>Codice identificativo:</p>
                                                         <p id="modalIdentificationSerialCode" class="font-weight-bold">{{ params.user_detail.identificationSerialCode }} </p>
                                                     </div>
-                                                    <div class="col-lg-4">
-                                                        <p>Data di scadenza:</p>
-                                                        <p id="modalidentificationExpirationDate" class="font-weight-bold">{{ params.user_detail.identificationExpirationDate }} </p>
-                                                    </div>
+                                                    {% if 'TS' in params.user_detail.identificationType %}
+                                                        <div class="col-lg-4">
+                                                            <p>Data di scadenza:</p>
+                                                            <p id="modalidentificationExpirationDate" class="font-weight-bold">{{ params.user_detail.identificationExpirationDate }} </p>
+                                                        </div>
+                                                    {% endif %}
                                                 {% endif %}
                                             </div>
 
@@ -700,10 +702,14 @@ function toggleIdentificationFields() {
     const identificationSerialCode = document.getElementById('identificationSerialCode');
     const identificationExpirationDate = document.getElementById('identificationExpirationDate');
 
-    if (type === 'TS' || type === 'CF') {
+    if (type === 'TS' ) {
         col_identificationSerialCode.style.display = 'block';
         col_identificationExpirationDate.style.display = 'block';
-    } else {
+    } else if (type === 'CF') {
+        col_identificationSerialCode.style.display = 'block';
+        col_identificationExpirationDate.style.display = 'none';
+        identificationExpirationDate.value = '';
+    } else if (type === 'AIRE') {
         col_identificationSerialCode.style.display = 'none';
         col_identificationExpirationDate.style.display = 'none';
         identificationSerialCode.value = '';
